@@ -23,6 +23,15 @@ export const getRandomQuiz = async (req, res, next) => {
   }
 };
 
+export const getRandomQuizzes = async (req, res, next) => {
+  try {
+    const quiz = await QuizModel.aggregate().sample(Number(req.params.count));
+    res.json(quiz);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const createQuiz = async (req, res) => {
   try {
     const quiz = new Quiz(req.body);
