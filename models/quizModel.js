@@ -1,9 +1,11 @@
 import mongoose from "mongoose";
 
 const quizModel = mongoose.Schema({
-  text: {
-    type: String,
-    required: true,
+  question: {
+    text: {
+      type: String,
+      required: true,
+    },
   },
   answers: {
     type: [
