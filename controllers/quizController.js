@@ -24,8 +24,19 @@ export const getRandomQuiz = async (req, res, next) => {
 };
 
 export const getRandomQuizzes = async (req, res, next) => {
+  const filter = {};
+
+  if (req.query.difficulty) {
+    filter.difficulty = req.query.difficulty;
+  }
+  if (req.query.language) {
+    filter.language = req.query.language;
+  }
+
   try {
-    const quiz = await QuizModel.aggregate().sample(Number(req.params.count));
+    const quiz = await QuizModel.aggregate()
+      .match(filter)
+      .sample(Number(req.params.count));
     res.json(quiz);
   } catch (error) {
     next(error);
