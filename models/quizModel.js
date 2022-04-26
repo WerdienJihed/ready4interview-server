@@ -2,10 +2,16 @@ import mongoose from "mongoose";
 
 const quizModel = mongoose.Schema({
   question: {
-    text: {
-      type: String,
-      required: true,
-    },
+    type: String,
+    required: true,
+  },
+  difficulty: {
+    type: String,
+    required: true,
+  },
+  language: {
+    type: String,
+    required: true,
   },
   answers: {
     type: [
