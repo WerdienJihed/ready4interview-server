@@ -43,9 +43,9 @@ export const getRandomQuizzes = async (req, res, next) => {
   }
 };
 
-export const createQuiz = async (req, res) => {
+export const createQuiz = async (req, res, next) => {
   try {
-    const quiz = new Quiz(req.body);
+    const quiz = new QuizModel(req.body);
     await quiz.save();
     res.json(quiz);
   } catch (error) {
@@ -53,7 +53,7 @@ export const createQuiz = async (req, res) => {
   }
 };
 
-export const updateQuiz = async (req, res) => {
+export const updateQuiz = async (req, res, next) => {
   try {
     const quiz = await QuizModel.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -65,7 +65,7 @@ export const updateQuiz = async (req, res) => {
   }
 };
 
-export const deleteQuiz = async (req, res) => {
+export const deleteQuiz = async (req, res, next) => {
   try {
     await QuizModel.findByIdAndDelete(req.params.id);
     res.json({ id: req.params.id });
