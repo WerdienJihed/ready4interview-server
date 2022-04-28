@@ -9,7 +9,7 @@ const quizModel = mongoose.Schema({
     type: String,
     required: true,
   },
-  language: {
+  topic: {
     type: String,
     required: true,
   },

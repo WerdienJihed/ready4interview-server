@@ -29,8 +29,8 @@ export const getRandomQuizzes = async (req, res, next) => {
   if (req.query.difficulty) {
     filter.difficulty = req.query.difficulty;
   }
-  if (req.query.language) {
-    filter.language = req.query.language;
+  if (req.query.topic) {
+    filter.topic = req.query.topic;
   }
 
   try {
