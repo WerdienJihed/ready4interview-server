@@ -1,7 +1,12 @@
 import QuizModel from "../models/quizModel.js";
 
 export const getQuizzes = async (req, res) => {
-  const quizzes = await QuizModel.find();
+  const page = req.query.page || 0;
+  const limit = req.query.limit || 0;
+
+  const quizzes = await QuizModel.find()
+    .skip(page * limit)
+    .limit(limit);
   res.json(quizzes);
 };
 
