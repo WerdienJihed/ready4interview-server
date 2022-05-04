@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import "dotenv/config";
+import errorHandler from "./middlewares/errorHandler.js";
 import quizRouter from "./routes/quizRoute.js";
 import randomQuizRouter from "./routes/randomQuizRoute.js";
 import connectDB from "./configs/db.js";
@@ -15,6 +16,7 @@ app.use(cors());
 
 app.use("/api/quiz", quizRouter);
 app.use("/api/random-quiz", randomQuizRouter);
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
