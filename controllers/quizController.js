@@ -4,15 +4,14 @@ import mongoose from "mongoose";
 export const getQuizzes = async (req, res, next) => {
   const page = req.query.page || 0;
   const limit = req.query.limit || 0;
-
-  const quizzes = await QuizModel.find()
-    .skip(page * limit)
-    .limit(limit)
-    .catch((err) => {
-      return next(err);
-    });
-
-  res.json(quizzes);
+  try {
+    const quizzes = await QuizModel.find()
+      .skip(page * limit)
+      .limit(limit);
+    res.json(quizzes);
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const getQuiz = async (req, res, next) => {
@@ -20,24 +19,25 @@ export const getQuiz = async (req, res, next) => {
 
   if (!valid) {
     const error = new Error(`Invalid id: ${req.params.id}`);
+    res.status(400);
     return next(error);
   }
 
-  const quiz = await QuizModel.findById(req.params.id).catch((err) => {
-    next(err);
-  });
-
-  res.json(quiz);
+  try {
+    const quiz = await QuizModel.findById(req.params.id);
+    res.json(quiz);
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const getRandomQuiz = async (req, res, next) => {
-  const quiz = await QuizModel.aggregate()
-    .sample(1)
-    .catch((err) => {
-      return next(err);
-    });
-
-  res.json(quiz[0]);
+  try {
+    const quiz = await QuizModel.aggregate().sample(1);
+    res.json(quiz[0]);
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const getRandomQuizzes = async (req, res, next) => {
@@ -50,36 +50,29 @@ export const getRandomQuizzes = async (req, res, next) => {
     filter.topic = req.query.topic;
   }
 
-  const quiz = await QuizModel.aggregate()
-    .match(filter)
-    .sample(Number(req.params.count))
-    .catch((err) => {
-      return next(err);
-    });
-
-  res.json(quiz);
+  try {
+    const quiz = await QuizModel.aggregate()
+      .match(filter)
+      .sample(Number(req.params.count));
+    res.json(quiz);
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const createQuiz = async (req, res, next) => {
-  const valid = await QuizSchema.isValid(req.body);
-
-  if (!valid) {
-    const error = new Error(`Invalid quiz!`);
-    res.status(400);
-    return next(error);
-  }
-
   const quiz = new QuizModel(req.body);
-  await quiz.save().catch((err) => {
-    next(err);
-  });
 
-  res.json(quiz);
+  try {
+    await quiz.save();
+    res.json(quiz);
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const updateQuiz = async (req, res, next) => {
   const validId = mongoose.isValidObjectId(req.params.id);
-  const validQuiz = await QuizSchema.isValid(req.body);
 
   if (!validId) {
     const error = new Error(`Invalid id: ${req.params.id}`);
@@ -87,18 +80,14 @@ export const updateQuiz = async (req, res, next) => {
     return next(error);
   }
 
-  if (!validQuiz) {
-    const error = new Error(`Invalid quiz!`);
-    res.status(400);
-    return next(error);
+  try {
+    const quiz = await QuizModel.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    res.json(quiz);
+  } catch (error) {
+    next(error);
   }
-
-  const quiz = await QuizModel.findByIdAndUpdate(req.params.id, req.body).catch(
-    (err) => {
-      next(err);
-    }
-  );
-  res.json(quiz);
 };
 
 export const deleteQuiz = async (req, res, next) => {
@@ -110,9 +99,10 @@ export const deleteQuiz = async (req, res, next) => {
     return next(error);
   }
 
-  await QuizModel.findByIdAndDelete(req.params.id).catch((err) => {
+  try {
+    await QuizModel.findByIdAndDelete(req.params.id);
+    res.json({ id: req.params.id });
+  } catch (error) {
     next(err);
-  });
-
-  res.json({ id: req.params.id });
+  }
 };
