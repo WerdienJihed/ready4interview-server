@@ -18,12 +18,12 @@ const quizModel = mongoose.Schema({
     type: String,
     required: [true, "Topic is required"],
   },
-  answers: {
+  options: {
     type: [
       {
         text: {
           type: String,
-          required: [true, "Answer text is required"],
+          required: [true, "Option text is required"],
         },
         correct: {
           type: Boolean,
@@ -31,13 +31,13 @@ const quizModel = mongoose.Schema({
         },
       },
     ],
-    required: [true, "Answers are required"],
-    minLength: [4, "At least 4 answers are required"],
+    required: [true, "Options are required"],
+    minLength: [4, "At least 4 Options are required"],
     validate: {
-      validator: function (answers) {
-        return answers.filter((answer) => answer.correct).length === 1;
+      validator: function (options) {
+        return options.filter((option) => option.correct).length === 1;
       },
-      message: "There must be exactly one correct answer",
+      message: "There must be exactly one correct option",
     },
   },
 });
